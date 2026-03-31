@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Date;
 
 @Repository
 public class StockRetriever {
@@ -24,15 +25,18 @@ public class StockRetriever {
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
+            // 🔹 ID
             ps.setInt(1, ingredientId);
-            ps.setString(2, at);
+
+            // 🔥 CORRECTION ICI (conversion String → Date)
+            ps.setDate(2, Date.valueOf(at));
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 int stock = rs.getInt("total");
 
-                // 🔥 conversion unité simple (exemple)
+                // 🔹 Conversion unité
                 if ("KG".equalsIgnoreCase(unit)) {
                     return stock / 1000;
                 }
